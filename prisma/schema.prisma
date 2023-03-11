@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum EnumUserRoles {
+  USER
+  ADMIN
+}
+
+model User {
+  id            Int             @id @default(autoincrement())
+
+  email         String          @unique
+  password      String
+
+  role          EnumUserRoles   @default(USER)
+
+  name          String          @default("")
+  avatarPath    String?         @default("/uploads/default-avatar.png") @map("avatar_path")
+
+  phone         String          @default("")
+
+  orders        Order[]
+  reviews       Review[]
+
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+}
+
+model Product {
+  id            Int             @id @default(autoincrement())
+
+  name          String          @unique
+  slug          String          @unique
+  description   String
+  price         Float
+  images        String[]
+
+  items         OrderItem[]
+  reviews       Review[]
+
+  category      Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId    Int?            @map("category_id")
+
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+}
+
+model Category {
+  id            Int             @id @default(autoincrement())
+
+  name          String          @unique
+  slug          String          @unique
+
+  products      Product[]
+
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+}
+
+enum EnumOrderStatus {
+  PENDING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model Order {
+  id            Int             @id @default(autoincrement())
+
+  status        EnumOrderStatus @default(PENDING)
+  totalAmount   Float           @default(0)
+
+  orderItems    OrderItem[]
+
+  user          User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId        Int?            @map("user_id")
+
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+}
+
+model OrderItem {
+  id            Int             @id @default(autoincrement())
+
+  quantity      Int
+  price         Float
+
+  order         Order?          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId       Int?            @map("order_id")
+
+  product       Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productId     Int?            @map("product_id")
+
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  @@map("Order_item")
+}
+
+model Review {
+  id            Int             @id @default(autoincrement())
+
+  rating        Int
+  text          String
+
+  user          User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        Int?            @map("user_id")
+
+  product       Product?        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId     Int?            @map("product_id")
+
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+}
