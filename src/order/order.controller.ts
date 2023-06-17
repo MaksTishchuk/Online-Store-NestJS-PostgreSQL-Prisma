@@ -5,7 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
-  ParseIntPipe,
+  ParseIntPipe, Patch,
   Post,
   Put, UseGuards
 } from '@nestjs/common';
@@ -16,8 +16,10 @@ import {OrderDto} from "./dto/order.dto";
 import {UpdateOrderStatusDto} from "./dto/update-order-status.dto";
 import {AdminRoleGuard} from "../user/guards/admin-role.guard";
 import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
+import {ApiTags} from "@nestjs/swagger";
 
 @Controller('orders')
+@ApiTags('Orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
@@ -60,7 +62,7 @@ export class OrderController {
     return this.orderService.getUserOrderDetail(userId, orderId)
   }
 
-  @Put(':id')
+  @Patch(':id')
   @UseGuards(JwtAuthGuard, AdminRoleGuard)
   updateOrderStatus(
     @Param('id', ParseIntPipe) orderId: number,
@@ -69,7 +71,7 @@ export class OrderController {
     return this.orderService.updateOrderStatus(orderId, updateOrderStatusDto)
   }
 
-  @Put(':id/cancel')
+  @Patch(':id/cancel')
   @UseGuards(JwtAuthGuard, AdminRoleGuard)
   cancelOrder(
     @GetUser('id') userId: number,

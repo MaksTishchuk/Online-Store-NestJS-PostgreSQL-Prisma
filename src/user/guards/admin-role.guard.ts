@@ -7,11 +7,11 @@ export class AdminRoleGuard implements CanActivate {
   constructor(private userService: UserService) {}
 
   async canActivate(context: ExecutionContext) {
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest()
     if (request?.user) {
-      const user = await this.userService.getUser(request.user.id);
-      return user.role === EnumUserRoles.ADMIN;
+      const user = await this.userService.getUser(request.user.id)
+      return user.role === EnumUserRoles.ADMIN
     }
-    return false;
+    return false
   }
 }

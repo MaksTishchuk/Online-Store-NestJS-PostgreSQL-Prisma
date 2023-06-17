@@ -26,17 +26,38 @@ export class UserService {
   }
 
   async updateProfile(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.getUser(id)
+    await this.getUser(id)
     const updatedUser = await this.prismaService.user.update({
       where: {id},
       data: {
         name: updateUserDto.name,
         avatarPath: updateUserDto.avatarPath,
-        phone: updateUserDto.phone,
-        password: updateUserDto.password ? await hash(updateUserDto.password) : user.password
+        phone: updateUserDto.phone
       }
     })
     delete updatedUser.password
     return updatedUser
+  }
+
+  async getUserByEmail(email: string, selectObject: Prisma.UserSelect = {}) {
+    const user = await this.prismaService.user.findUnique({
+      where: {email},
+      select: {
+        ...returnUserObject,
+        ...selectObject
+      }
+    })
+    if (!user) throw new NotFoundException('User not found!')
+    return user
+  }
+
+  async findUserByEmail(email: string, selectObject: Prisma.UserSelect = {}) {
+    return await this.prismaService.user.findUnique({
+      where: {email},
+      select: {
+        ...returnUserObject,
+        ...selectObject
+      }
+    })
   }
 }

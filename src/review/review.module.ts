@@ -3,9 +3,10 @@ import { ReviewService } from './review.service';
 import { ReviewController } from './review.controller';
 import {PrismaService} from "../prisma.service";
 import {UserModule} from "../user/user.module";
+import {ProductModule} from "../product/product.module";
 
 @Module({
-  imports: [UserModule],
+  imports: [UserModule, ProductModule],
   controllers: [ReviewController],
   providers: [ReviewService, PrismaService]
 })

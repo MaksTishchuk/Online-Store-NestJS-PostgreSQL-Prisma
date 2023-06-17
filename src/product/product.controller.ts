@@ -16,8 +16,10 @@ import {FiltersProductsDto} from "./dto/filters-products.dto";
 import {UpdateProductDto} from "./dto/update-product.dto";
 import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
 import {AdminRoleGuard} from "../user/guards/admin-role.guard";
+import {ApiTags} from "@nestjs/swagger";
 
 @Controller('products')
+@ApiTags('Products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 

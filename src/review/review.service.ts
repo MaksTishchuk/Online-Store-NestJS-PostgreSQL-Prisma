@@ -2,14 +2,17 @@ import {Injectable, NotFoundException} from '@nestjs/common';
 import {PrismaService} from "../prisma.service";
 import {ReviewDto} from "./dto/review.dto";
 import {returnReviewObject} from "./return-review.object";
+import {ProductService} from "../product/product.service";
 
 @Injectable()
 export class ReviewService {
   constructor(
-    private prismaService: PrismaService
+    private prismaService: PrismaService,
+    private productService: ProductService
   ) {}
 
   async createReview(userId: number, reviewDto: ReviewDto, productId: number) {
+    await this.productService.getProduct(productId)
     return await this.prismaService.review.create({
       data: {
         rating: reviewDto.rating,
@@ -32,12 +35,12 @@ export class ReviewService {
   }
 
   async getReview(id: number) {
-    const category = await this.prismaService.review.findUnique({
+    const review = await this.prismaService.review.findUnique({
       where: {id: id},
       select: returnReviewObject,
     })
-    if (!category) throw new NotFoundException('Review not found!')
-    return category
+    if (!review) throw new NotFoundException('Review not found!')
+    return review
   }
 
   async getAverageValueByProductId(productId: number) {
@@ -48,6 +51,7 @@ export class ReviewService {
   }
 
   async updateReview(id: number, reviewDto: ReviewDto) {
+    await this.getReview(id)
     return await this.prismaService.review.update({
       where: {id: id},
       data: {
@@ -58,6 +62,7 @@ export class ReviewService {
   }
 
   async deleteReview(id: number) {
+    await this.getReview(id)
     return await this.prismaService.review.delete({where: {id}})
   }
 }

@@ -15,8 +15,10 @@ import {GetUser} from "../auth/decorators/get-user.decorator";
 import {ReviewDto} from "./dto/review.dto";
 import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
 import {AdminRoleGuard} from "../user/guards/admin-role.guard";
+import {ApiTags} from "@nestjs/swagger";
 
 @Controller('reviews')
+@ApiTags('Reviews')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 
@@ -33,6 +35,7 @@ export class ReviewController {
 
   @Get('')
   @HttpCode(200)
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
   async getReviews() {
     return this.reviewService.getReviews()
   }

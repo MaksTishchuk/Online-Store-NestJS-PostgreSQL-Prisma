@@ -32,6 +32,7 @@
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/serve-static": "^3.0.1",
+    "@nestjs/swagger": "^6.3.0",
     "@prisma/client": "^4.11.0",
     "adminjs": "^6.8.7",
     "argon2": "^0.30.3",
@@ -45,7 +46,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "shortid": "^2.2.16",
-    "slugify": "^1.6.5"
+    "slugify": "^1.6.5",
+    "swagger-ui-express": "^4.6.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

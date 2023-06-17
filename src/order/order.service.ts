@@ -80,7 +80,7 @@ export class OrderService {
   }
 
   async updateOrderStatus(orderId: number, updateOrderStatusDto: UpdateOrderStatusDto) {
-    const order = await this.getOrderDetail(orderId)
+    await this.getOrderDetail(orderId)
     return await this.prismaService.order.update({
       where: {id: orderId},
       data: {status: updateOrderStatusDto.status}
